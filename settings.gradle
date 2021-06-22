@@ -1,0 +1,2 @@
+rootProject.name = "GiftApp"
+include ':app'
