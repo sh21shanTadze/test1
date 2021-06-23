@@ -1,30 +1,56 @@
 package com.example.giftapp
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import android.widget.Button
+import android.widget.TextView
+import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var emailTextView: TextView
+    private lateinit var uidTextView: TextView
+    private lateinit var passwordChangeButton: Button
+    private lateinit var logoutButton: Button
+
+    private lateinit var mAuth: FirebaseAuth
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val navView : BottomNavigationView =findViewById(R.id.nav_View)
+        mAuth = FirebaseAuth.getInstance()
 
-        val navController = findNavController(R.id.nav_host_fragment)
+        init()
 
-        val appBarConfig = AppBarConfiguration(setOf(
+        registerListeners()
 
-            R.id.loginFragment,
-            R.id.passwordForgotFragment,
-            R.id.registerFragment,
-        ))
-
-        setupActionBarWithNavController(navController, appBarConfig)
-        navView.setupWithNavController(navController)
     }
+
+    private fun init() {
+
+        emailTextView = findViewById(R.id.emailtextView)
+        uidTextView = findViewById(R.id.idtextView)
+        passwordChangeButton = findViewById(R.id.changePassword)
+        logoutButton = findViewById(R.id.logout)
+
+        emailTextView.text = mAuth.currentUser?.email
+        uidTextView.text = mAuth.currentUser?.uid
+
+    }
+
+    private fun registerListeners() {
+
+        passwordChangeButton.setOnClickListener {
+            startActivity(Intent(this, ForgorPasswordActivity::class.java))
+        }
+
+        logoutButton.setOnClickListener {
+            startActivity(Intent(this, LoginActivity::class.java))
+            mAuth.signOut()
+            finish()
+        }
+
+    }
+
 }
